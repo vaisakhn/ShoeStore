@@ -1,0 +1,238 @@
+{%extends 'store/base.html'%}
+{%block main_block%}
+
+<form action="{%url 'add-to-cart'%}" method="post">
+  {%csrf_token%}
+<section class="overflow-hidden">
+    <div class="mx-auto max-w-5xl px-5 py-24">
+        <div class="mx-auto flex flex-wrap items-center lg:w-4/5">
+          {%if variant%}
+          {%for v in variant%}
+          <img
+          alt="Nike Air Max 21A"
+          class="h-64 w-full rounded object-cover lg:h-96 lg:w-1/2"
+          src="{{v.variant_img.url}}"
+        />
+        {%endfor%}
+          {%else%}
+          <img
+          alt="Nike Air Max 21A"
+          class="h-64 w-full rounded object-cover lg:h-96 lg:w-1/2"
+          src="{{product.thumbnail.url}}"
+        />
+          {%endif%}
+          <div class="mt-6 w-full lg:mt-0 lg:w-1/2 lg:pl-10">
+            <h2 class="text-sm font-semibold tracking-widest text-gray-500">
+              {{product.brand_object}}
+            </h2>
+            <h1 class="my-4 text-3xl font-semibold text-black">{{product}}</h1>
+            <div class="my-4 flex items-center">
+              <span class="flex items-center space-x-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-yellow-500"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-yellow-500"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-yellow-500"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-yellow-500"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-yellow-500"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="ml-3 inline-block text-xs font-semibold">
+                  4 Reviews
+                </span>
+              </span>
+            </div>
+            <p class="leading-relaxed">
+              {{product.description}}
+            </p>
+            <div class="mb-5 mt-6 flex items-center border-b-2 border-gray-100 pb-5">
+                <div style="margin: 10px;" class="ml-auto flex items-center">
+                    <span class="mr-3 text-sm font-semibold">Color</span>
+                    <div class="relative">
+                      <select required name="color" onchange="getcolor(this)" class="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-black focus:outline-none focus:ring-2 focus:ring-black">
+                        {%if selected_color%}
+                        <option value="{{selected_color}}">{{selected_color}}</option>
+                        {%else%}
+                        <option selected disabled value="">Select</option>
+                        {%endif%}
+                        {%for d in color%}
+                        
+                        <option value="{{d.color_variant}}">{{d.color_variant}}</option>
+                        
+                        {%endfor%}
+                        
+                      </select>
+                      
+                      <span class="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-chevron-down"
+                        >
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+              <div style="margin: 10px;" class="ml-auto flex items-center">
+                <span class="mr-3 text-sm font-semibold">Size</span>
+                <div class="relative">
+                  <select required name="size" class="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-black focus:outline-none focus:ring-2 focus:ring-black">
+                    <option value="">Select</option>
+                    {%for s in product.size_objects.all%}
+                    <option value="{{s.number}}">{{s.number}}</option>
+                    {%endfor%}
+                  </select>
+                  <span class="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-chevron-down"
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <div style="margin: 10px;" class="ml-auto flex items-center">
+                <span class="mr-3 text-sm font-semibold">Quantity</span>
+                <div class="relative">
+                  <select required name="quantity" class="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-black focus:outline-none focus:ring-2 focus:ring-black">
+                    <option value="">Select</option>
+                    {%for q in quantity%}
+                    <option value="{{q}}">{{q}}</option>
+                    {%endfor%}
+                  </select>
+                  <span class="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-chevron-down"
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              
+              <span class="title-font text-xl font-bold text-gray-900">
+                {%if variant%}
+                {%for v in variant%}
+                ₹{{v.price_variant}}
+                <input hidden type="text" name="price" id="" value="{{v.price_variant}}">
+                {%endfor%}
+                {%else%}
+                ₹{{product.price}}
+                {%endif%}
+              </span>
+
+              <button
+              
+                type="submit"
+                class="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+</form>
+
+<script>
+  
+  function getcolor(selectcolor){
+    var color=selectcolor.value
+    window.location.href = window.location.pathname + `?color=${color}`
+    
+  }
+</script>
+
+  
+  
+{%endblock%}
