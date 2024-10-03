@@ -6,7 +6,7 @@ from django.db.models import Sum
 # Create your views here.
 
 from store.forms import SignUpForm,SignInForm,ShippingAddressForm
-from store.models import Product,ProductVariant,Cart,CartItems
+from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress
 
 
 
@@ -130,7 +130,8 @@ class ShippingAddressView(View):
         form_instance=ShippingAddressForm(request.POST)
 
         if form_instance.is_valid():
-            form_instance.save()
+            data=form_instance.cleaned_data
+            ShippingAddress.objects.create(**data,user_object=self.request.user)
 
             return render(request,'store/create_order.html')
         
