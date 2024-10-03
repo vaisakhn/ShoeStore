@@ -59,22 +59,6 @@ class Size(models.Model):
     
 
     
-    
-
-
-class Color(models.Model):
-
-    title=models.CharField(max_length=200,unique=True)
-    
-    created_date=models.DateTimeField(auto_now_add=True)
-
-    updated_date=models.DateTimeField(auto_now=True)
-
-    is_active=models.BooleanField(default=True)
-
-    def __str__(self) -> str:
-        return self.title
-    
 
 
 class Category(models.Model):
@@ -175,6 +159,28 @@ class CartItems(models.Model):
     is_active=models.BooleanField(default=True)
 
 
+class ShippingAddress(models.Model):
+
+    user_object=models.ForeignKey(User,on_delete=models.CASCADE)
+
+    full_name = models.CharField(max_length=200)
+
+    street_address = models.CharField(max_length=1000)
+
+    address_line_2 = models.CharField(max_length=255, blank=True, null=True)
+
+    city = models.CharField(max_length=200)
+
+    state = models.CharField(max_length=200)
+
+    postal_code = models.CharField(max_length=20)
+
+    country =models.CharField(max_length=200)
+
+    phone_number = models.CharField(max_length=20)
+
+    email = models.EmailField()
+
 
 
 
@@ -182,7 +188,9 @@ class OrderSummary(models.Model):
 
     user_object=models.ForeignKey(User,on_delete=models.CASCADE,related_name="orders")
 
-    product_object=models.ManyToManyField(Product)
+    product_object=models.ManyToManyField(ProductVariant)
+
+    shipping_address=models.ForeignKey(ShippingAddress,on_delete=models.CASCADE)
 
     order_id=models.CharField(max_length=200,null=True)
 
@@ -211,13 +219,4 @@ post_save.connect(sender=User,receiver=create_cart)
 
 
 
-class ShippingAddress(models.Model):
-    full_name = models.CharField(max_length=200)
-    street_address = models.CharField(max_length=1000)
-    address_line_2 = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=200)
-    state = models.CharField(max_length=200)
-    postal_code = models.CharField(max_length=20)
-    country =models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=20)
-    email = models.EmailField()
+
