@@ -181,6 +181,13 @@ class ShippingAddress(models.Model):
 
     email = models.EmailField()
 
+    created_date=models.DateTimeField(auto_now_add=True,null=True)
+
+    updated_date=models.DateTimeField(auto_now=True,null=True)
+
+    is_active=models.BooleanField(default=True)
+
+
 
 
 
@@ -201,6 +208,8 @@ class OrderSummary(models.Model):
     updated_date=models.DateTimeField(auto_now=True)
 
     is_active=models.BooleanField(default=True)
+
+    total=models.FloatField(null=True)
 
 
 

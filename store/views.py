@@ -6,7 +6,16 @@ from django.db.models import Sum
 # Create your views here.
 
 from store.forms import SignUpForm,SignInForm,ShippingAddressForm
-from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress
+from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary
+
+
+# aliasing decouple as dc
+import decouple as dc
+
+# Create your views here.
+
+KEY_SECRET=dc.config('KEY_SECRET')
+KEY_ID=dc.config('KEY_ID')
 
 
 
@@ -136,4 +145,45 @@ class ShippingAddressView(View):
             return render(request,'store/create_order.html')
         
         return render(request,'store/shipping_address.html',{'form':form_instance})
+    
+
+import razorpay
+
+class CheckOutView(View):
+    def get(self,request,*args,**kwargs):
+        client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
+        amount=request.user.basket.wishlist_total * 100
+        data={"amount":amount,"currency":"INR","receipt":"order_rcptid_11"}
+        payment=client.order.create(data=data)
+
+        # create order_object
+        cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
+        total=0
+        for c in cart_items:
+            total+=c.total
+
+        order_summery_obj=OrderSummary.objects.create(
+            user_object=request.user,
+            order_id=payment.get('id'),
+            shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+            total=total
+        )
+
+        for ci in cart_items:
+            order_summery_obj.project_objects.add(ci.project_object)
+            order_summery_obj.save()
+
+
+        # for ci in cart_items:
+        #     ci.is_order_placed=True
+        #     ci.save()
+
+        context={
+            'key':KEY_ID,
+            'amount':data.get('amount'),
+            'currency':data.get('currency'),
+            'order_id':payment.get('id')
+        }
+
+        return render(request,'store/payment.html',context)
     
