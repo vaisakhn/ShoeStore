@@ -31,5 +31,6 @@ urlpatterns = [
     path('mycart/remove/<int:pk>/',views.CartItemDelete.as_view(),name='cartitem-remove'),
     path('shipping/',views.ShippingAddressView.as_view(),name='shipping-address'),
     path('checkout/',views.CheckOutView.as_view(),name='checkout'),
-    path('orders/',views.OrderSummaryView.as_view(),name='orders')
+    path('orders/',views.OrderSummaryView.as_view(),name='orders'),
+    path('payment/verification/',views.PaymentVerificationView.as_view(),name='payment-verify'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

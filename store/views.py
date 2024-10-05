@@ -14,6 +14,8 @@ import decouple as dc
 
 import uuid
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 KEY_SECRET=dc.config('KEY_SECRET')
@@ -153,12 +155,7 @@ import razorpay
 
 class CheckOutView(View):
     def get(self,request,*args,**kwargs):
-        # client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
-        # amount=request.user.basket.wishlist_total * 100
-        # data={"amount":amount,"currency":"INR","receipt":"order_rcptid_11"}
-        # payment=client.order.create(data=data)
 
-        # create order_object
         qs=request.user.cart.cart_items.filter(is_order_placed=False)
 
         shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first()
@@ -202,47 +199,71 @@ class CheckOutView(View):
                 ci.save()
 
         else:
-            print('payment------',"online")
+
+            qs=request.user.cart.cart_items.filter(is_order_placed=False)
+            total=0
+            for p in qs:
+                total+=p.total
+
+            client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
+            amount=total * 100
+            data={"amount":amount,"currency":"INR","receipt":"order_rcptid_11"}
+            payment=client.order.create(data=data)
             
 
-        return redirect('orders')
+            # create order_object
+            cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
+            order_summery_obj=OrderSummary.objects.create(
+                user_object=request.user,
+                order_id=payment.get('id'),
+                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+                total=total
+                )
+
+            for ci in cart_items:
+                order_summery_obj.cart_items_object.add(ci)
+                order_summery_obj.payment_method='online'
+                order_summery_obj.save()
+
+            context={
+                'key':KEY_ID,
+                'amount':data.get('amount'),
+                'currency':data.get('currency'),
+                'order_id':payment.get('id')
+                }
+            
+
+        return render(request,'store/payment.html',context)
 
 
-        # def generate_order_id():
 
-        #     return str(uuid.uuid4())
-        
-        # order_id = generate_order_id()
+@method_decorator(csrf_exempt,name='dispatch')
+class PaymentVerificationView(View):
+    def post(self,request,*args,**kwargs):
+        client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
+        ordersummery_obj=OrderSummary.objects.get(order_id=request.POST.get('razorpay_order_id'))
+        login(request,ordersummery_obj.user_object)
+        try:
+            # doubtfull code
+            client.utility.verify_payment_signature(request.POST)
+            print('payment succes')
+            order_id=request.POST.get('razorpay_order_id')
+            OrderSummary.objects.filter(order_id=order_id).update(is_paid=True)
+            cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
+            for ci in cart_items:
+                ci.is_order_placed=True
+                ci.save()
+                
+        except:
+            # handling code
+            print('payment failed ')
 
+        return redirect('index')
 
-        # order_summery_obj=OrderSummary.objects.create(
-        #     user_object=request.user,
-        #     order_id=order_id,
-        #     shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
-        #     total=total
-        # )
-
-        # for ci in cart_items:
-        #     order_summery_obj.project_objects.add(ci.project_object)
-        #     order_summery_obj.save()
-
-
-        # # for ci in cart_items:
-        # #     ci.is_order_placed=True
-        # #     ci.save()
-
-        # # context={
-        # #     'key':KEY_ID,
-        # #     'amount':data.get('amount'),
-        # #     'currency':data.get('currency'),
-        # #     'order_id':payment.get('id')
-        # # }
-
-        # return render(request,'store/checkout.html',context)
-    
 
 class OrderSummaryView(View):
     def get(self,request,*args,**kwargs):
-        orders=OrderSummary.objects.filter(user_object=request.user).order_by('created_date')
+        orders=OrderSummary.objects.filter(user_object=request.user).order_by('-created_date')
 
         return render(request,'store/order_summary.html',{'orders':orders})
+    
