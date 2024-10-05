@@ -12,6 +12,8 @@ from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,O
 # aliasing decouple as dc
 import decouple as dc
 
+import uuid
+
 # Create your views here.
 
 KEY_SECRET=dc.config('KEY_SECRET')
@@ -142,7 +144,7 @@ class ShippingAddressView(View):
             data=form_instance.cleaned_data
             ShippingAddress.objects.create(**data,user_object=self.request.user)
 
-            return render(request,'store/create_order.html')
+            return redirect('checkout')
         
         return render(request,'store/shipping_address.html',{'form':form_instance})
     
@@ -151,39 +153,91 @@ import razorpay
 
 class CheckOutView(View):
     def get(self,request,*args,**kwargs):
-        client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
-        amount=request.user.basket.wishlist_total * 100
-        data={"amount":amount,"currency":"INR","receipt":"order_rcptid_11"}
-        payment=client.order.create(data=data)
+        # client=razorpay.Client(auth=(KEY_ID,KEY_SECRET))
+        # amount=request.user.basket.wishlist_total * 100
+        # data={"amount":amount,"currency":"INR","receipt":"order_rcptid_11"}
+        # payment=client.order.create(data=data)
 
         # create order_object
-        cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
-        total=0
-        for c in cart_items:
-            total+=c.total
+        qs=request.user.cart.cart_items.filter(is_order_placed=False)
 
-        order_summery_obj=OrderSummary.objects.create(
-            user_object=request.user,
-            order_id=payment.get('id'),
-            shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
-            total=total
-        )
+        shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first()
 
-        for ci in cart_items:
-            order_summery_obj.project_objects.add(ci.project_object)
-            order_summery_obj.save()
 
+        return render(request,'store/checkout.html',{'products':qs,"shipping":shipping_address})
+    
+
+    def post(self,request,*args,**kwargs):
+
+        payment_method=request.POST.get('payment-method')
+
+        if payment_method == 'cod':
+            def generate_order_id():
+                
+                return str(uuid.uuid4())
+
+            order_id = generate_order_id()
+
+            qs=request.user.cart.cart_items.filter(is_order_placed=False)
+            total=0
+            for p in qs:
+                total+=p.total
+
+            cart_items=qs
+            order_summery_obj=OrderSummary.objects.create(
+                user_object=request.user,
+                order_id=order_id,
+                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+                total=total
+                )
+            for ci in cart_items:
+                order_summery_obj.cart_items_object.add(ci)
+                order_summery_obj.payment_method='cash on delivery'
+                order_summery_obj.save()
+       
+
+
+            for ci in cart_items:
+                ci.is_order_placed=True
+                ci.save()
+
+        else:
+            print('payment------',"online")
+            
+
+        return redirect('index')
+
+
+        # def generate_order_id():
+
+        #     return str(uuid.uuid4())
+        
+        # order_id = generate_order_id()
+
+
+        # order_summery_obj=OrderSummary.objects.create(
+        #     user_object=request.user,
+        #     order_id=order_id,
+        #     shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+        #     total=total
+        # )
 
         # for ci in cart_items:
-        #     ci.is_order_placed=True
-        #     ci.save()
+        #     order_summery_obj.project_objects.add(ci.project_object)
+        #     order_summery_obj.save()
 
-        context={
-            'key':KEY_ID,
-            'amount':data.get('amount'),
-            'currency':data.get('currency'),
-            'order_id':payment.get('id')
-        }
 
-        return render(request,'store/payment.html',context)
+        # # for ci in cart_items:
+        # #     ci.is_order_placed=True
+        # #     ci.save()
+
+        # # context={
+        # #     'key':KEY_ID,
+        # #     'amount':data.get('amount'),
+        # #     'currency':data.get('currency'),
+        # #     'order_id':payment.get('id')
+        # # }
+
+        # return render(request,'store/checkout.html',context)
     
+

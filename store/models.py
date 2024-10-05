@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 from django.db.models.signals import post_save
 
+from django.db.models.signals import pre_save
+
 
 
 # request.user
@@ -189,17 +191,38 @@ class ShippingAddress(models.Model):
 
 
 
-
-
 class OrderSummary(models.Model):
+
+    STATUS_PENDING = 'Pending'
+    STATUS_SHIPPED = 'Shipped'
+    STATUS_DELIVERED = 'Dilivered'
+    STATUS_CANCELLED = 'Cancelled'
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_SHIPPED, 'Shipped'),
+        (STATUS_DELIVERED, 'Delivered'),
+        (STATUS_CANCELLED, 'Cancelled'),
+    ]
+
+
+
 
     user_object=models.ForeignKey(User,on_delete=models.CASCADE,related_name="orders")
 
-    product_object=models.ManyToManyField(ProductVariant)
+    cart_items_object=models.ManyToManyField(CartItems)
 
     shipping_address=models.ForeignKey(ShippingAddress,on_delete=models.CASCADE)
 
-    order_id=models.CharField(max_length=200,null=True)
+    order_id=models.CharField(max_length=200,null=True,unique=True)
+
+    payment_method=models.CharField(max_length=200,null=True)
+
+    delivery_status=models.CharField(
+        max_length=200,
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING,
+    )
 
     is_paid=models.BooleanField(default=False)
     
@@ -210,6 +233,7 @@ class OrderSummary(models.Model):
     is_active=models.BooleanField(default=True)
 
     total=models.FloatField(null=True)
+
 
 
 
