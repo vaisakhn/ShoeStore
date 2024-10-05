@@ -205,7 +205,7 @@ class CheckOutView(View):
             print('payment------',"online")
             
 
-        return redirect('index')
+        return redirect('orders')
 
 
         # def generate_order_id():
@@ -241,3 +241,8 @@ class CheckOutView(View):
         # return render(request,'store/checkout.html',context)
     
 
+class OrderSummaryView(View):
+    def get(self,request,*args,**kwargs):
+        orders=OrderSummary.objects.filter(user_object=request.user).order_by('created_date')
+
+        return render(request,'store/order_summary.html',{'orders':orders})

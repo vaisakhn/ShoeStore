@@ -1,0 +1,89 @@
+{%extends 'store/base.html'%}
+{%block main_block%}
+<div class="mx-auto my-4 max-w-6xl px-2 md:my-6 md:px-0">
+    <h2 class="text-3xl font-bold">Order Details</h2>
+    {%if orders%}
+    <div class="mt-3 text-sm">
+      Check the status of recent and old orders &amp; discover more products
+    </div>
+    {%for o in orders%}
+    <div class="mt-8 flex flex-col overflow-hidden rounded-lg border border-gray-300 md:flex-row">
+        <div class="w-full border-r border-gray-300 bg-gray-100 md:max-w-xs">
+          <div class="p-8">
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-1">
+              <div class="mb-4">
+                <div class="text-sm font-semibold">Order ID</div>
+                <div class="text-sm font-medium text-gray-700">{{o.order_id}}</div>
+              </div>
+              <div class="mb-4">
+                <div class="text-sm font-semibold">Date</div>
+                <div class="text-sm font-medium text-gray-700">{{o.created_date}}</div>
+              </div>
+              <div class="mb-4">
+                <div class="text-sm font-semibold">Total Amount</div>
+                
+                <div class="text-sm font-medium text-gray-700">₹{{o.total}}</div>
+                
+              </div>
+              <div class="mb-4">
+                <div class="text-sm font-semibold">Payment Status</div>
+                <div class="text-sm font-medium text-gray-700">{%if o.is_paid == True %}
+                    Payment completed
+                    {%else%}
+                    Payment pending
+                    {%endif%}
+                </div>
+                <br>
+                <div class="text-sm font-semibold">Delivery Status</div>
+                <div class="text-sm font-medium text-gray-700">
+                    {{o.delivery_status}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="p-8">
+            <ul class="-my-7 divide-y divide-gray-200">
+              {%for p in o.cart_items_object.all%}
+              <div class="row gy-3 mb-4">
+                <div class="col-lg-5">
+                  <div class="me-lg-5">
+                    <div class="d-flex">
+                      <img src="{{p.product_variant_object.variant_img.url}}" class="border rounded me-3" style="width: 96px; height: 96px;" />
+                      <div class="">
+                        <p class="nav-link">{{p.product_variant_object.product_object}}</p>
+                        <p class="text-muted">{{p.product_variant_object.color_variant}}, {{p.size_variant}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                  <div class="">
+                    <input disabled style="width: 100px;" class="form-control me-4" value="        {{p.quantity}}">
+                  </div>
+                  <div class="">
+                    <text class="h6">₹{{p.total}}</text> <br />
+                    <small class="text-muted text-nowrap"> ₹{{p.product_variant_object.price_variant}}/ per item </small>
+                  </div>
+                </div>
+                <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
+                  
+                </div>
+              </div>
+              {{p.product_variant_object.product_object.description}}
+              {%endfor%}
+            </ul>
+            <hr class="my-8 border-t border-t-gray-200" />
+            
+          </div>
+        </div>
+      </div>
+    {%endfor%}
+
+    {%else%}
+    <h3>You haven't purchased anything</h3>
+    {%endif%}
+  </div>
+  
+{%endblock%}
