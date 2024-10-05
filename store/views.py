@@ -267,3 +267,11 @@ class OrderSummaryView(View):
 
         return render(request,'store/order_summary.html',{'orders':orders})
     
+
+
+
+class SignOutView(View):
+    def get(self,request,*args,**kwargs):
+        logout(request)
+
+        return redirect('signin')

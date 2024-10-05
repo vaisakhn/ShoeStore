@@ -33,4 +33,5 @@ urlpatterns = [
     path('checkout/',views.CheckOutView.as_view(),name='checkout'),
     path('orders/',views.OrderSummaryView.as_view(),name='orders'),
     path('payment/verification/',views.PaymentVerificationView.as_view(),name='payment-verify'),
+    path('signout/',views.SignOutView.as_view(),name='signout'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
