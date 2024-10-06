@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="relative w-full bg-white">
+    <!-- <div class="relative w-full bg-white">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
           <div class="inline-flex items-center space-x-2">
             <span>
@@ -83,11 +83,70 @@
             </svg>
           </div>
         </div>
-      </div>
+      </div> -->
+
+
+
+      <nav class="bg-gray-800 p-4">
+        <div style="height: 14px;" class="container mx-auto flex justify-between items-center">
+            <a href="{%url 'index'%}" class="text-white text-lg font-bold">Brand</a>
+            <div class="hidden md:flex space-x-4">
+                <a href="{%url 'index'%}" class="text-gray-300 hover:text-white">Home</a> &emsp;
+
+                <select id="categorySelect" name="category" onchange="getcat(this)" class="bg-gray-700 text-gray-300 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
+                  <option value="">Select Category</option>
+                  <option value="sports">Sports</option>
+                  <option value="casual">Casual</option>
+                  <option value="formal">Formal</option>
+              </select>
+
+                <a href="{%url 'mycart'%}" class="text-gray-300 hover:text-white">My-Cart</a>&emsp;
+                <a href="{%url 'orders'%}" class="text-gray-300 hover:text-white">My-Orders</a>&emsp;
+                <a href="{%url 'signout'%}" type="button"
+                class="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Log-Out</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-300 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
       {%block main_block%}
       {%endblock%}
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      const btn = document.querySelector('button');
+      const menu = document.querySelector('div.hidden');
+  
+      btn.addEventListener('click', () => {
+          menu.classList.toggle('hidden');
+      });
+  </script>
+  <script>
+    function getcat(selectcat){
+    var category=selectcat.value
+    window.location.href = window.location.pathname + `?cat=${category}`
+    
+  }
+
+  function setSelectBoxValue() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('cat');
+        if (category) {
+            document.getElementById('categorySelect').value = category;
+        }
+    }
+
+    window.onload = setSelectBoxValue;
+
+  </script>
+
+
 </html>

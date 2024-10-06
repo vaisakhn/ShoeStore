@@ -6,7 +6,7 @@ from django.db.models import Sum
 # Create your views here.
 
 from store.forms import SignUpForm,SignInForm,ShippingAddressForm,ReviewForm
-from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary
+from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary,Category
 
 
 # aliasing decouple as dc
@@ -70,6 +70,12 @@ class SignInView(View):
 class IndexView(View):
     def get(self,request,*args,**kwargs):
         qs=Product.objects.all()
+        category=request.GET.get('cat')
+        if category :
+            qs=qs.filter(category_object__title=category)
+        else:
+            qs
+        
 
         return render(request,'store/index.html',{'product':qs})
     
