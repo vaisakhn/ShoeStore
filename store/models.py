@@ -6,6 +6,8 @@ from django.db.models.signals import post_save
 
 from django.db.models.signals import pre_save
 
+from django.db.models import Avg
+
 
 
 # request.user
@@ -105,6 +107,18 @@ class Product(models.Model):
     def __str__(self):
 
         return self.title
+    
+    @property
+    def review_count(self):
+        return self.product_reviews.all().count()
+    
+    @property
+    def average_rating(self):
+        return self.product_reviews.all().values('rating').aggregate(avg=Avg('rating')).get('avg',0)
+    
+    @property
+    def colors(self):
+        return self.product_variant.all().values('color_variant')
     
 
 
@@ -255,7 +269,7 @@ from django.core.validators import MaxValueValidator,MinValueValidator
 
 class Reviews(models.Model):
 
-    product_variant_object=models.ForeignKey(ProductVariant,on_delete=models.CASCADE,related_name='product_reviews')
+    product_object=models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_reviews')
 
     user_object=models.ForeignKey(User,on_delete=models.CASCADE)
 

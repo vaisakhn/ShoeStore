@@ -274,11 +274,12 @@ class ReviewAddView(FormView):
 
     def post(self,request,*args,**kwargs):
         id=kwargs.get('pk')
-        product_obj=ProductVariant.objects.get(id=id)
+        product_variant_obj=ProductVariant.objects.get(id=id)
+        product_obj=product_variant_obj.product_object
         form_instance=ReviewForm(request.POST)
         if form_instance.is_valid():
             form_instance.instance.user_object=(request.user)
-            form_instance.instance.product_variant_object=product_obj
+            form_instance.instance.product_object=product_obj
             form_instance.save()
 
             return redirect('orders')
@@ -291,3 +292,4 @@ class SignOutView(View):
         logout(request)
 
         return redirect('signin')
+    

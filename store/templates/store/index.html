@@ -11,8 +11,14 @@
     <div class="p-4">
       <h1 class="inline-flex items-center text-lg font-semibold">
         {{p.title}}
-      </h1>
-      <div class="mt-5 flex items-center space-x-2">
+      </h1> <br>
+      Reviews:{{p.review_count}} &emsp;
+        {%if p.average_rating%}
+        Rating:{{p.average_rating}}
+        {%else%}
+        0
+        {%endif%}
+      <div style="height: 5px;padding: 0%;margin: 0%;" class="mt-5 flex items-center space-x-2">
         <span class="block text-sm font-semibold">Size : </span>
         {%for s in p.size_objects.all%}
         <span class="block cursor-pointer rounded-md border border-gray-300 p-1 px-2 text-xs font-medium">
@@ -20,6 +26,16 @@
         </span>
         {%endfor%}
       </div>
+
+      <div style="padding: 0%;margin: 0%; height: 5px;" class="mt-5 flex items-center space-x-2">
+        <span class="block text-sm font-semibold">Colors : </span>
+        {%for c in p.colors.all%}
+        <span class="block cursor-pointer rounded-md border border-gray-300 p-1 px-2 text-xs font-medium">
+          {{c.color_variant}}
+        </span>
+        {%endfor%}
+      </div>
+
       <a href="{%url 'product-details' p.id%}">
         <button
         type="button"
