@@ -38,10 +38,10 @@ class SignUpView(View):
 
         if form_instance.is_valid():
             form_instance.save()
-            messages.success(request,'account created successfully')
+            
 
             return redirect('signin')
-        messages.error(request,'failed to create account')
+        
         return render(request,'store/reg_form.html',{'form':form_instance})
     
 
@@ -90,11 +90,12 @@ class ProductDetailView(View):
         id=kwargs.get('pk')
         qs=Product.objects.get(id=id)
         qty=[1,2,3,4,5,6,7,8,9,10]
+
         
         color=ProductVariant.objects.filter(product_object=id).values("color_variant")
         if request.GET.get('color'):
             selected_color=request.GET.get('color')
-            variant_obj=ProductVariant.objects.filter(color_variant=selected_color)
+            variant_obj=ProductVariant.objects.filter(product_object=id,color_variant=selected_color)
 
             return render(request,'store/product_details.html',{'product':qs,'color':color,'variant':variant_obj,'selected_color':selected_color,'quantity':qty})
 
@@ -104,8 +105,9 @@ class ProductDetailView(View):
 @method_decorator(signin_required,name='dispatch')
 class AddToCartView(View):
     def post(self,request,*args,**kwargs):
+        id=kwargs.get('pk')
         color=request.POST.get('color')
-        product_variant_obj=ProductVariant.objects.get(color_variant=color)
+        product_variant_obj=ProductVariant.objects.get(product_object=id,color_variant=color)
         size=request.POST.get('size')
         quantity=int(request.POST.get('quantity'))
         price=int(request.POST.get('price'))
@@ -319,7 +321,7 @@ class ReviewAddView(FormView):
 class SignOutView(View):
     def get(self,request,*args,**kwargs):
         logout(request)
-        messages.success(request,'log-out successfull')
+        
 
         return redirect('signin')
     

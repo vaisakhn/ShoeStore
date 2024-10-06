@@ -10,14 +10,7 @@
 </head>
 <body>
     <div class="container">
-        {%if messages%}
-        {%for m in messages%}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{m}}</strong> You should check in on some of those fields below.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {%endfor%}
-        {%endif%}
+        
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8 mt-3 d-flex">

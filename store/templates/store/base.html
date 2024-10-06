@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <meta charset="UTF-8">
@@ -101,8 +102,10 @@
 
                 <a href="{%url 'mycart'%}" class="text-gray-300 hover:text-white">My-Cart</a>&emsp;
                 <a href="{%url 'orders'%}" class="text-gray-300 hover:text-white">My-Orders</a>&emsp;
-                <a href="{%url 'signout'%}" type="button"
-                class="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Log-Out</a>
+                <i style="font-size: xx-large;color: aliceblue;" class="fa-solid fa-user"></i>
+                <a  class="text-gray-300 hover:text-white">{{request.user}}</a>
+                <p href="{%url 'signout'%}" type="button"
+                class="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Log-Out</p>
             </div>
             <div class="md:hidden">
                 <button class="text-gray-300 focus:outline-none">
