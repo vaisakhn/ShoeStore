@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.views.generic import View,FormView
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Sum
+from django.contrib import messages
 
 # Create your views here.
 
@@ -36,9 +37,10 @@ class SignUpView(View):
 
         if form_instance.is_valid():
             form_instance.save()
+            messages.success(request,'account created successfully')
 
             return redirect('signin')
-        
+        messages.error(request,'failed to create account')
         return render(request,'store/reg_form.html',{'form':form_instance})
     
 
@@ -60,9 +62,10 @@ class SignInView(View):
 
             if user_obj:
                 login(request,user_obj)
+                messages.success(request,'log-in successfully')
 
                 return redirect('index')
-            
+            messages.error(request,'failed to log in')
             return render(request,'store/login.html',{'form':form_instance})
         
 
@@ -114,6 +117,8 @@ class AddToCartView(View):
             total=total
         )
 
+        messages.success(request,'item added succesfully')
+
         return redirect("index")
 
 
@@ -135,6 +140,8 @@ class CartItemDelete(View):
 
         CartItems.objects.get(id=id).delete()
 
+        messages.success(request,'items removed successfully')
+
         return redirect('mycart')
     
 
@@ -151,9 +158,10 @@ class ShippingAddressView(View):
         if form_instance.is_valid():
             data=form_instance.cleaned_data
             ShippingAddress.objects.create(**data,user_object=self.request.user)
+            messages.success(request,'shipping address added')
 
             return redirect('checkout')
-        
+        messages.error(request,'failed to add shipping details')
         return render(request,'store/shipping_address.html',{'form':form_instance})
     
 
@@ -203,6 +211,9 @@ class CheckOutView(View):
             for ci in cart_items:
                 ci.is_order_placed=True
                 ci.save()
+
+            messages.success(request,'order placed successfully')
+            return redirect('orders')
 
         else:
 
@@ -263,8 +274,11 @@ class PaymentVerificationView(View):
         except:
             # handling code
             print('payment failed ')
-
-        return redirect('index')
+            messages.error(request,'payment failed')
+            return redirect('orders')
+        
+        messages.success(request,'payment success')
+        return redirect('orders')
 
 
 class OrderSummaryView(View):
@@ -287,15 +301,19 @@ class ReviewAddView(FormView):
             form_instance.instance.user_object=(request.user)
             form_instance.instance.product_object=product_obj
             form_instance.save()
+            messages.success(request,'review added successfully')
+
 
             return redirect('orders')
-
+        
+        messages.error(request,'failed to add review')
         return render(request,self.template_name,{'form':form_instance})
 
 
 class SignOutView(View):
     def get(self,request,*args,**kwargs):
         logout(request)
+        messages.success(request,'log-out successfull')
 
         return redirect('signin')
     
