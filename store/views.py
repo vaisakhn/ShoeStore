@@ -263,7 +263,7 @@ class PaymentVerificationView(View):
         try:
             # doubtfull code
             client.utility.verify_payment_signature(request.POST)
-            print('payment succes')
+            
             order_id=request.POST.get('razorpay_order_id')
             OrderSummary.objects.filter(order_id=order_id).update(is_paid=True)
             cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
@@ -273,7 +273,7 @@ class PaymentVerificationView(View):
                 
         except:
             # handling code
-            print('payment failed ')
+            
             messages.error(request,'payment failed')
             return redirect('orders')
         
