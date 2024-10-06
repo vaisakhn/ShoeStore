@@ -195,7 +195,7 @@ class OrderSummary(models.Model):
 
     STATUS_PENDING = 'Pending'
     STATUS_SHIPPED = 'Shipped'
-    STATUS_DELIVERED = 'Dilivered'
+    STATUS_DELIVERED = 'Delivered'
     STATUS_CANCELLED = 'Cancelled'
 
     STATUS_CHOICES = [
@@ -251,5 +251,22 @@ def create_cart(sender,instance,created,*args,**kwargs):
 post_save.connect(sender=User,receiver=create_cart)
 
 
+from django.core.validators import MaxValueValidator,MinValueValidator
+
+class Reviews(models.Model):
+
+    product_variant_object=models.ForeignKey(ProductVariant,on_delete=models.CASCADE,related_name='product_reviews')
+
+    user_object=models.ForeignKey(User,on_delete=models.CASCADE)
+
+    comment=models.TextField()
+
+    rating=models.PositiveIntegerField(default=1,validators=[MinValueValidator(1),MaxValueValidator(5)])
+
+    created_date=models.DateTimeField(auto_now_add=True)
+
+    updated_date=models.DateTimeField(auto_now=True)
+
+    is_active=models.BooleanField(default=True)
 
 

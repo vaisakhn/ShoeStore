@@ -1,11 +1,11 @@
 from django.shortcuts import render,redirect
-from django.views.generic import View
+from django.views.generic import View,FormView
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Sum
 
 # Create your views here.
 
-from store.forms import SignUpForm,SignInForm,ShippingAddressForm
+from store.forms import SignUpForm,SignInForm,ShippingAddressForm,ReviewForm
 from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary
 
 
@@ -268,6 +268,22 @@ class OrderSummaryView(View):
         return render(request,'store/order_summary.html',{'orders':orders})
     
 
+class ReviewAddView(FormView):
+    template_name='store/review_add.html'
+    form_class=ReviewForm
+
+    def post(self,request,*args,**kwargs):
+        id=kwargs.get('pk')
+        product_obj=ProductVariant.objects.get(id=id)
+        form_instance=ReviewForm(request.POST)
+        if form_instance.is_valid():
+            form_instance.instance.user_object=(request.user)
+            form_instance.instance.product_variant_object=product_obj
+            form_instance.save()
+
+            return redirect('orders')
+
+        return render(request,self.template_name,{'form':form_instance})
 
 
 class SignOutView(View):

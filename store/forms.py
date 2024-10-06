@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from store.models import UserProfile,ShippingAddress
+from store.models import UserProfile,ShippingAddress,Reviews
 
 
 
@@ -59,4 +59,14 @@ class ShippingAddressForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'placeholder': 'Country','class':'form-control'}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Phone Number','class':'form-control'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email','class':'form-control'}),
+        }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model=Reviews
+        fields=['comment','rating']
+        widgets={
+            'rating':forms.NumberInput(attrs={'class':'w-full border p-3','placeholder':'enter a number in between 1 to 5'}),
+            'comment':forms.Textarea(attrs={'class':'w-full border p-3','rows':5})
         }

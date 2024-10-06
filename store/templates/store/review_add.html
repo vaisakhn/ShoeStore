@@ -1,0 +1,10 @@
+{%extends 'store/base.html'%}
+{%block main_block%}
+<form class="border w-1/2 mx-auto p-5" action="" method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    <h3 align="center"><b>Add Your Review</b></h3>
+    {{form}}
+    <button type="submit"
+        class="my-3 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Add</button>
+</form>
+{%endblock%}
