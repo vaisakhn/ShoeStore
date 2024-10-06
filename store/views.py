@@ -8,6 +8,7 @@ from django.contrib import messages
 
 from store.forms import SignUpForm,SignInForm,ShippingAddressForm,ReviewForm
 from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary,Category
+from store.decorators import signin_required
 
 
 # aliasing decouple as dc
@@ -69,7 +70,7 @@ class SignInView(View):
             return render(request,'store/login.html',{'form':form_instance})
         
 
-
+@method_decorator(signin_required,name='dispatch')
 class IndexView(View):
     def get(self,request,*args,**kwargs):
         qs=Product.objects.all()
@@ -83,6 +84,7 @@ class IndexView(View):
         return render(request,'store/index.html',{'product':qs})
     
 
+@method_decorator(signin_required,name='dispatch')
 class ProductDetailView(View):
     def get(self,request,*args,**kwargs):
         id=kwargs.get('pk')
@@ -99,7 +101,7 @@ class ProductDetailView(View):
         return render(request,'store/product_details.html',{'product':qs,'color':color,'quantity':qty})
 
 
-
+@method_decorator(signin_required,name='dispatch')
 class AddToCartView(View):
     def post(self,request,*args,**kwargs):
         color=request.POST.get('color')
@@ -122,6 +124,7 @@ class AddToCartView(View):
         return redirect("index")
 
 
+@method_decorator(signin_required,name='dispatch')
 class MyCartView(View):
     def get(self,request,*args,**kwargs):
         qs=request.user.cart.cart_items.filter(is_order_placed=False)
@@ -133,7 +136,7 @@ class MyCartView(View):
         return render(request,'store/my_cart.html',{'products':qs,"total":total})
 
 
-
+@method_decorator(signin_required,name='dispatch')
 class CartItemDelete(View):
     def get(self,request,*args,**kwargs):
         id=kwargs.get('pk')
@@ -145,6 +148,7 @@ class CartItemDelete(View):
         return redirect('mycart')
     
 
+@method_decorator(signin_required,name='dispatch')
 class ShippingAddressView(View):
     def get(self,request,*args,**kwargs):
         form_instance=ShippingAddressForm()
@@ -166,7 +170,7 @@ class ShippingAddressView(View):
     
 
 import razorpay
-
+@method_decorator(signin_required,name='dispatch')
 class CheckOutView(View):
     def get(self,request,*args,**kwargs):
 
@@ -253,7 +257,7 @@ class CheckOutView(View):
         return render(request,'store/payment.html',context)
 
 
-
+@method_decorator(signin_required,name='dispatch')
 @method_decorator(csrf_exempt,name='dispatch')
 class PaymentVerificationView(View):
     def post(self,request,*args,**kwargs):
@@ -281,6 +285,7 @@ class PaymentVerificationView(View):
         return redirect('orders')
 
 
+@method_decorator(signin_required,name='dispatch')
 class OrderSummaryView(View):
     def get(self,request,*args,**kwargs):
         orders=OrderSummary.objects.filter(user_object=request.user).order_by('-created_date')
@@ -288,6 +293,7 @@ class OrderSummaryView(View):
         return render(request,'store/order_summary.html',{'orders':orders})
     
 
+@method_decorator(signin_required,name='dispatch')
 class ReviewAddView(FormView):
     template_name='store/review_add.html'
     form_class=ReviewForm
