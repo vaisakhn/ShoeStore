@@ -152,11 +152,24 @@
           </div>
         </div>
       </div>
-  </section>
-  <section>
-    {%for r in reviews%}
-    {{r}}
-    {%endfor%}
+
+
+      <div>
+        <h1 align="center" class="text-3xl font-bold my-4">Product Reviews</h1>
+        <div style="padding-left: 20px;padding-right: 20px;" class="space-y-4">
+            {% for review in reviews %}
+                <div style="background-color: rgb(244, 246, 248);" class="p-4 rounded-lg shadow-md">
+                    <h5 class="text-xl font-semibold">{{ review.user_object.username }}</h5>
+                    <p class="mt-2">{{ review.comment }}</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-yellow-500">Rating: {{ review.rating }} / 5</span>
+                        <span class="text-gray-500 text-sm">{{ review.created_date }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+
   </section>
 </form>
 

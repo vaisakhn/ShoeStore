@@ -90,7 +90,7 @@ class ProductDetailView(View):
         id=kwargs.get('pk')
         qs=Product.objects.get(id=id)
         qty=[1,2,3,4,5,6,7,8,9,10]
-        reviews=Reviews.objects.filter(product_object=id)
+        reviews=Reviews.objects.filter(product_object=id).order_by('-created_date')
 
         
         color=ProductVariant.objects.filter(product_object=id).values("color_variant")
