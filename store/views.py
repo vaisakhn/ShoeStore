@@ -7,7 +7,7 @@ from django.contrib import messages
 # Create your views here.
 
 from store.forms import SignUpForm,SignInForm,ShippingAddressForm,ReviewForm
-from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary,Category
+from store.models import Product,ProductVariant,Cart,CartItems,ShippingAddress,OrderSummary,Category,Reviews
 from store.decorators import signin_required
 
 
@@ -90,6 +90,7 @@ class ProductDetailView(View):
         id=kwargs.get('pk')
         qs=Product.objects.get(id=id)
         qty=[1,2,3,4,5,6,7,8,9,10]
+        reviews=Reviews.objects.filter(product_object=id)
 
         
         color=ProductVariant.objects.filter(product_object=id).values("color_variant")
@@ -97,9 +98,9 @@ class ProductDetailView(View):
             selected_color=request.GET.get('color')
             variant_obj=ProductVariant.objects.filter(product_object=id,color_variant=selected_color)
 
-            return render(request,'store/product_details.html',{'product':qs,'color':color,'variant':variant_obj,'selected_color':selected_color,'quantity':qty})
+            return render(request,'store/product_details.html',{'product':qs,'color':color,'variant':variant_obj,'selected_color':selected_color,'quantity':qty,'reviews':reviews})
 
-        return render(request,'store/product_details.html',{'product':qs,'color':color,'quantity':qty})
+        return render(request,'store/product_details.html',{'product':qs,'color':color,'quantity':qty,'reviews':reviews})
 
 
 @method_decorator(signin_required,name='dispatch')
