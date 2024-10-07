@@ -14,7 +14,7 @@
       </h1> <br>
       Reviews:{{p.review_count}} &emsp;
         {%if p.average_rating%}
-        Rating:{{p.average_rating}}
+        Rating:{{p.average_rating|floatformat:2}}
         {%else%}
         0
         {%endif%}

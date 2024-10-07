@@ -28,7 +28,7 @@
             <h1 class="my-4 text-3xl font-semibold text-black">{{product}}</h1>
             <div class="my-4 flex items-center">
               <span class="flex items-center space-x-1">
-                Rating {{product.average_rating}}
+                Rating {{product.average_rating|floatformat:2 }}
                 <span class="ml-3 inline-block text-xs font-semibold">
                   {{product.review_count}} Reviews
                 </span>
