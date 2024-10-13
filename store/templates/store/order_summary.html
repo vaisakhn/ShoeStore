@@ -73,7 +73,7 @@
                 </div>
               </div>
               {{p.product_variant_object.product_object.description}}
-             <br><a class="btn btn-outline-success" href="{%url 'review-add' p.product_variant_object.id%}" >Add Review</a>
+             <br><a class="btn btn-success" href="{%url 'review-add' p.product_variant_object.id%}" >Add Review</a>
               {%endfor%}
             </ul>
             <hr class="my-8 border-t border-t-gray-200" />
@@ -81,9 +81,7 @@
           </div>
         </div>
       </div>
-      <p class="mt-4 text-sm font-medium text-gray-500">
-        {{o.delivery_status}}
-      </p>
+      
       {%else%}
 
       <div class="mt-8 flex flex-col overflow-hidden rounded-lg border border-gray-300 md:flex-row">
@@ -159,9 +157,7 @@
           </div>
         </div>
       </div>
-      <p class="mt-4 text-sm font-medium text-gray-500">
-        {{o.delivery_status}}
-      </p>
+      
 
       {%endif%}
     {%endfor%}

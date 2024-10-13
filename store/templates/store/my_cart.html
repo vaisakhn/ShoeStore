@@ -9,6 +9,7 @@
         <!-- cart -->
         <div class="col-lg-9">
           <div class="card border shadow-0">
+            {%if products%}
             <div class="m-4">
               <h4 class="card-title mb-4">Your shopping cart</h4>
               {%for p in products%}
@@ -43,7 +44,44 @@
   
               
             </div>
+            {%else%}
+            <div class="m-4">
+              <h4 class="card-title mb-4">Your shopping cart is empty add some products</h4>
+              {%for p in products%}
+              <div class="row gy-3 mb-4">
+                <div class="col-lg-5">
+                  <div class="me-lg-5">
+                    <div class="d-flex">
+                      <img src="{{p.product_variant_object.variant_img.url}}" class="border rounded me-3" style="width: 96px; height: 96px;" />
+                      <div class="">
+                        <p class="nav-link">{{p.product_variant_object.product_object}}</p>
+                        <p class="text-muted">{{p.product_variant_object.color_variant}}, {{p.size_variant}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                  <div class="">
+                    <input disabled style="width: 100px;" class="form-control me-4" value="        {{p.quantity}}">
+                  </div>
+                  <div class="">
+                    <text class="h6">₹{{p.total}}</text> <br />
+                    <small class="text-muted text-nowrap"> ₹{{p.product_variant_object.price_variant}}/ per item </small>
+                  </div>
+                </div>
+                <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
+                  <div class="float-md-end">
+                    <a href="{%url 'cartitem-remove' p.id%}" class="btn btn-light border text-danger icon-hover-danger"> Remove</a>
+                  </div>
+                </div>
+              </div>
+              {%endfor%}
   
+              
+            </div>
+
+            {%endif%}
+
             <div class="border-top pt-4 mx-4 mb-4">
               <p><i class="fas fa-truck text-muted fa-lg"></i> Free Delivery within 1-2 weeks</p>
               <p class="text-muted">

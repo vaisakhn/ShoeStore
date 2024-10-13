@@ -13,13 +13,14 @@
         {{p.title}}
       </h1> <br>
       Reviews:{{p.review_count}} &emsp;
+      Rating:
         {%if p.average_rating%}
-        Rating:{{p.average_rating|floatformat:2}}
+        {{p.average_rating|floatformat:2}}
         {%else%}
         0
         {%endif%}
       <div style="height: 5px;padding: 0%;margin: 0%;" class="mt-5 flex items-center space-x-2">
-        <span class="block text-sm font-semibold">Size : </span>
+        <span class="block text-sm font-semibold">Sizes: </span>
         {%for s in p.size_objects.all%}
         <span class="block cursor-pointer rounded-md border border-gray-300 p-1 px-2 text-xs font-medium">
           {{s.number}}
