@@ -15,9 +15,7 @@ from django.db.models import Avg
 # USer=>userProfile
 # request.user.profile
 
-class UserProfile(models.Model):
-
-    profile_pic=models.ImageField(upload_to="profile_pictures",default="/profile_pictures/default.png")
+class UserProfile(models.Model): 
 
     user_object=models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
 
@@ -285,3 +283,6 @@ class Reviews(models.Model):
 
     def __str__(self) -> str:
         return self.comment
+
+
+# profile_pic=models.ImageField(upload_to="profile_pictures",default="/profile_pictures/default.png")

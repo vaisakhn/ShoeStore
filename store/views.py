@@ -3,6 +3,7 @@ from django.views.generic import View,FormView
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Sum
 from django.contrib import messages
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -179,7 +180,7 @@ class CheckOutView(View):
 
         qs=request.user.cart.cart_items.filter(is_order_placed=False)
 
-        shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first()
+        shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('-created_date').first()
 
 
         return render(request,'store/checkout.html',{'products':qs,"shipping":shipping_address})
@@ -205,7 +206,7 @@ class CheckOutView(View):
             order_summery_obj=OrderSummary.objects.create(
                 user_object=request.user,
                 order_id=order_id,
-                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('-created_date').first(),
                 total=total
                 )
             for ci in cart_items:
@@ -218,6 +219,12 @@ class CheckOutView(View):
             for ci in cart_items:
                 ci.is_order_placed=True
                 ci.save()
+
+            subject='Order Placed'
+            order_id=order_id
+            message=f'hello customer your order has been placed order id={order_id} amount={total}'
+            email=str(order_summery_obj.user_object.email)
+            send_mail(subject,message,'vaisakhn02@gmail.com',[email],fail_silently=False)
 
             messages.success(request,'order placed successfully')
             return redirect('orders')
@@ -240,7 +247,7 @@ class CheckOutView(View):
             order_summery_obj=OrderSummary.objects.create(
                 user_object=request.user,
                 order_id=payment.get('id'),
-                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('created_date').first(),
+                shipping_address=ShippingAddress.objects.filter(user_object=request.user).order_by('-created_date').first(),
                 total=total
                 )
 
@@ -273,10 +280,18 @@ class PaymentVerificationView(View):
             
             order_id=request.POST.get('razorpay_order_id')
             OrderSummary.objects.filter(order_id=order_id).update(is_paid=True)
+            total=OrderSummary.objects.filter(order_id=order_id).values_list('total',flat=True)
+            amount=0
+            for t in total:
+                amount+=t
             cart_items=request.user.cart.cart_items.filter(is_order_placed=False)
             for ci in cart_items:
                 ci.is_order_placed=True
                 ci.save()
+            subject='Order Placed'
+            message=f'hello customer your order has been placed order id={order_id} amount={amount}'
+            email=str(ordersummery_obj.user_object.email)
+            send_mail(subject,message,'vaisakhn02@gmail.com',[email],fail_silently=False)
                 
         except:
             # handling code

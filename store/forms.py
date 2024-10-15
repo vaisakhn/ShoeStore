@@ -24,15 +24,6 @@ class SignInForm(forms.Form):
 
 
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model=UserProfile
-        fields=['profile_pic']
-
-        widgets={
-            'profile_pic':forms.FileInput(attrs={'class':'w-full border p-2 my-3'})
-        }
-
 
 
 class ShippingAddressForm(forms.ModelForm):
